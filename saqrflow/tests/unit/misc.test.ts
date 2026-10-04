@@ -139,3 +139,12 @@ describe('crypto & webhook signatures', () => {
     expect(parseWebhook({})).toEqual({ statuses: [], messages: [] })
   })
 })
+
+import { toCsv, csvCell } from '@/lib/csv'
+describe('csv export safety', () => {
+  it('escapes quotes/newlines and neutralises formulas', () => {
+    expect(csvCell('a,b')).toBe('"a,b"'); expect(csvCell('say "hi"')).toBe('"say ""hi"""'); expect(csvCell(null)).toBe('')
+    for (const f of ['=HYPERLINK("x")', '+1', '-1', '@SUM(A1)']) expect(csvCell(f).replace(/^"/, '')).toMatch(/^'/)
+    expect(toCsv(['A', 'B'], [[1, 'x']])).toBe('﻿A,B\r\n1,x')
+  })
+})

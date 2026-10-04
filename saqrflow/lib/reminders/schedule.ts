@@ -1,4 +1,4 @@
-import { daysBetween } from '../time'
+import { addMonths, daysBetween } from '../time'
 
 export const DEFAULT_OFFSETS = [90, 60, 30, 15, 7, 3, 1, 0]
 export interface ScheduleOptions { offsets?: number[] | null; overdueEveryDays?: number; overdueMax?: number }
@@ -34,4 +34,24 @@ export function nextOccurrence(dueDate: string, today: string, opts: ScheduleOpt
 
 export function parseOffsets(input: string): number[] {
   return [...new Set(input.split(/[,\s]+/).map(Number).filter(n => Number.isInteger(n) && n >= 0 && n <= 730))].sort((a, b) => b - a)
+}
+
+/** Date on which the next not-yet-reached threshold will fire (null if none left). */
+export function nextTriggerDate(dueDate: string, today: string, offsets?: number[] | null): string | null {
+  const list = [...new Set((offsets?.length ? offsets : DEFAULT_OFFSETS))].sort((a, b) => b - a)
+  const remaining = daysBetween(today, dueDate)
+  const upcoming = list.filter(o => o < remaining)
+  if (!upcoming.length) return null
+  const o = Math.max(...upcoming)
+  const d = new Date(Date.UTC(+dueDate.slice(0, 4), +dueDate.slice(5, 7) - 1, +dueDate.slice(8, 10)) - o * 86_400_000)
+  return d.toISOString().slice(0, 10)
+}
+
+const STEP: Record<string, number> = { monthly: 1, quarterly: 3, yearly: 12 }
+/** Next due date of a recurring custom reminder strictly after `today` (original day-of-month is preserved). */
+export function advanceDue(due: string, recurrence: string, today: string): string {
+  const step = STEP[recurrence]; if (!step || due >= today) return due
+  let k = 1, next = addMonths(due, step)
+  while (next < today && k < 1200) { k++; next = addMonths(due, step * k) }
+  return next
 }

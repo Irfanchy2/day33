@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { todayInTz, daysBetween, addDays, endOfMonth, inQuietHours, nextAllowedSendTime, zonedToUtc, formatLongDate, formatAed } from '@/lib/time'
-import { nextOccurrence, DEFAULT_OFFSETS, parseOffsets } from '@/lib/reminders/schedule'
+import { nextOccurrence, DEFAULT_OFFSETS, parseOffsets, nextTriggerDate, advanceDue } from '@/lib/reminders/schedule'
+import { addMonths } from '@/lib/time'
 
 describe('timezone handling (Asia/Dubai, UTC+4, no DST)', () => {
   it('"today" rolls over at 20:00 UTC', () => {
@@ -63,4 +64,23 @@ describe('reminder schedule', () => {
     expect(nextOccurrence(addDays(T, 91), T, { offsets: [120] })!.offset).toBe(120)
   })
   it('parses offset input', () => expect(parseOffsets('7, 30 90,abc,-1,30')).toEqual([90, 30, 7]))
+})
+
+describe('next trigger date & recurrence', () => {
+  it('nextTriggerDate = first threshold not yet reached', () => {
+    expect(nextTriggerDate('2026-12-31', '2026-10-04')).toBe('2026-11-01')   // 88 days left → 60-day mark is Nov 1
+    expect(nextTriggerDate('2026-10-05', '2026-10-04')).toBe('2026-10-05')   // 1 day left → "due date" (offset 0)
+    expect(nextTriggerDate('2026-10-04', '2026-10-04')).toBeNull()
+    expect(nextTriggerDate('2026-12-31', '2026-10-04', [10])).toBe('2026-12-21')
+  })
+  it('addMonths clamps month ends', () => {
+    expect(addMonths('2026-01-31', 1)).toBe('2026-02-28'); expect(addMonths('2028-01-31', 1)).toBe('2028-02-29'); expect(addMonths('2026-11-30', 3)).toBe('2027-02-28')
+  })
+  it('advanceDue keeps the original day and lands after today', () => {
+    expect(advanceDue('2026-01-31', 'monthly', '2026-03-01')).toBe('2026-03-31')
+    expect(advanceDue('2026-01-15', 'quarterly', '2026-10-04')).toBe('2026-10-15')
+    expect(advanceDue('2025-02-28', 'yearly', '2026-10-04')).toBe('2027-02-28')
+    expect(advanceDue('2026-12-01', 'monthly', '2026-10-04')).toBe('2026-12-01')   // future: unchanged
+    expect(advanceDue('2026-01-01', 'none', '2026-10-04')).toBe('2026-01-01')
+  })
 })

@@ -54,3 +54,10 @@ export function nextAllowedSendTime(now: Date, start: string | null | undefined,
   const sameDay = zonedToUtc(today, endHm, tz)
   return sameDay.getTime() > now.getTime() ? sameDay : zonedToUtc(addDays(today, 1), endHm, tz)
 }
+
+/** Add calendar months, clamping the day (31 Jan + 1 month = 28/29 Feb). */
+export function addMonths(iso: string, n: number): string {
+  const [y, m, d] = iso.split('-').map(Number)
+  const t = new Date(Date.UTC(y, m - 1 + n, 1)), last = new Date(Date.UTC(t.getUTCFullYear(), t.getUTCMonth() + 1, 0)).getUTCDate()
+  return new Date(Date.UTC(t.getUTCFullYear(), t.getUTCMonth(), Math.min(d, last))).toISOString().slice(0, 10)
+}
