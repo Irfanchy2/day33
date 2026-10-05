@@ -62,7 +62,7 @@ Costs: Meta bills per conversation/message by category and country; enter your p
 ## Scheduler
 
 `GET|POST /api/cron/reminders` with `Authorization: Bearer $CRON_SECRET`. It is idempotent (unique `dedupe_key`), so run it often (it also drives retries and quiet-hour releases).
-* **Vercel:** `vercel.json` already schedules every 15 min; set `CRON_SECRET` (Vercel sends it automatically). Hobby plans allow only daily crons → use an alternative below.
+* **Vercel:** `vercel.json` runs it once a day at 04:00 UTC (08:00 Dubai) — the most a Hobby plan allows. For timely retries and quiet-hour releases, add an external cron every 15 min (below), or on Vercel Pro change the schedule to `*/15 * * * *`. Vercel sends `CRON_SECRET` automatically.
 * **Alternatives:** Supabase `pg_cron` + `pg_net` calling the URL, GitHub Actions `schedule`, or any external cron (cron-job.org) with the bearer header.
 
 ## Production deployment
