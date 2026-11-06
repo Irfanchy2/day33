@@ -79,11 +79,41 @@
       "skillPath": "skills/minimalist-skill/SKILL.md",
       "computedHash": "08873a3131d3be27bef9bf3304b310b16b44ca6e3561aebe532797be3443f6bd"
     },
+    "rea-analysis-optimization": {
+      "source": "morluto/rea",
+      "sourceType": "github",
+      "skillPath": ".agents/skills/rea-analysis-optimization/SKILL.md",
+      "computedHash": "a7d0fcdf9aaf9dbf30724c78c1087cd5f78d09169d96796a8376ce9681a8fe4f"
+    },
+    "rea-changelog-update": {
+      "source": "morluto/rea",
+      "sourceType": "github",
+      "skillPath": ".agents/skills/rea-changelog-update/SKILL.md",
+      "computedHash": "9ee602e608081344dafc5901fbe3f6509197b245d482bc97203cb7c2afdb5b75"
+    },
+    "rea-ci-tests-audit": {
+      "source": "morluto/rea",
+      "sourceType": "github",
+      "skillPath": ".agents/skills/rea-ci-tests-audit/SKILL.md",
+      "computedHash": "66bacc26230b7157e69add008656302b16b90df5c776130ce20fd6f5ef6ef8b6"
+    },
+    "rea-tool-design": {
+      "source": "morluto/rea",
+      "sourceType": "github",
+      "skillPath": ".agents/skills/rea-tool-design/SKILL.md",
+      "computedHash": "6e81237fe3d69f0bed6ccc03fa1d267e1f71dc1e3f7af90f6fe9a4c314196e2b"
+    },
     "redesign-existing-projects": {
       "source": "Leonxlnx/taste-skill",
       "sourceType": "github",
       "skillPath": "skills/redesign-skill/SKILL.md",
       "computedHash": "b405eee0e0e80fc243f731d9aa368bca307e356db7e6157d27101d369dac6726"
+    },
+    "reverse-engineer-anything": {
+      "source": "morluto/rea",
+      "sourceType": "github",
+      "skillPath": ".agents/skills/reverse-engineer-anything/SKILL.md",
+      "computedHash": "b59c4b7d2dcdc6c75d771a72c9b640700e9eb5feb9463eaba7b09793148cac70"
     },
     "shannon": {
       "source": "unicodeveloper/shannon",
